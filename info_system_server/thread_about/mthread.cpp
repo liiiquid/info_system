@@ -3,50 +3,28 @@
 
 mthread::mthread(qintptr socketDescriptor,TServer* server) : QThread()
 {
+     qDebug() << "thread mthread:: " << QThread::currentThread() << ": is running...";
     this->socketDescriptor = socketDescriptor;
     this->server = server;
 }
 
 void mthread::run()
 {
-    qDebug() << "thread " << this << ": is running...";
-    socket = new QTcpSocket();
+    qDebug() << "thread child: " << QThread::currentThread() << ": is running...";
+    t_socket* socket = new t_socket(this->server);
+    this->socket = socket;
     if(!socket->setSocketDescriptor(socketDescriptor)){this->exit();if(socket) delete socket;return;}
-    QObject::connect(socket,SIGNAL(disconnected()),this,SLOT(close_socket()));
-    QObject::connect(socket,SIGNAL(readyRead()),this,SLOT(read()));
-    QObject::connect(this,SIGNAL(readok()),this,SLOT(write()));
-    serial = new message_serialization();
-    msg_opr = new message_operation(this->server);
-    msgs = new QQueue<message*>;
+    QObject::connect(socket,SIGNAL(disconnected()),socket,SLOT(close_socket()));
+    QObject::connect(socket,SIGNAL(readyRead()),socket,SLOT(read()));
+    QObject::connect(socket,SIGNAL(readok()),socket,SLOT(write_process()));
+    QObject::connect(socket,SIGNAL(socket_close()),this,SLOT(exit_thread()));
     this->exec();
 }
-
 /*slot function*/
-
-void mthread::close_socket()
+void mthread::exit_thread()
 {
-    socket->close();
     delete socket;
-    this->quit();
     this->exit();
     emit thread_over(this);
-}
-void mthread::read()
-{
-    this->cache = socket->readAll();
-    msgs->enqueue(serial->unserialize(this->cache));
-    qDebug()<< "message queue size: " << msgs->size();
-    emit readok();
-}
-
-void mthread::write()
-{
-    message* msg = this->msgs->dequeue();
-    message* res = msg_opr->msg_dispatch(msg);
-    if(res->type == 6) {this->server->add_client(res->receiver,this->socket); emit new_client();} /*type 6 means that server has accepted this client and tell the client*/
-    else if(res->type == 7) {this->server->add_unproced_message(res); emit new_message();/*need procoessed by the administrator...*/}
-    socket->write(serial->serialize(res));
-    delete res;
-    delete msg;
 }
 

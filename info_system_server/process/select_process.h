@@ -2,12 +2,12 @@
 #define SELECT_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class select_process
 {
 public:
-    select_process(TServer* server);
-    TServer* socket_server;
+    select_process(db_operation* dbo);
+    db_operation* dbo;
     message* select_db(message* msg);
 };
 

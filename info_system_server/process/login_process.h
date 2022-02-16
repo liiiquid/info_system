@@ -2,12 +2,12 @@
 #define LOGIN_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class login_process
 {
 public:
-    login_process(TServer* server);
-    TServer* socket_server;
+    login_process(db_operation* dbo);
+    db_operation* dbo;
     message* login_check(message* msg);
 };
 

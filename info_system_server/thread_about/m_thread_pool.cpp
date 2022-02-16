@@ -22,7 +22,7 @@ bool m_thread_pool::close_thread(mthread* thread)
         {
             thread->deleteLater();
             thread->wait();
-            delete thread;  this->thread_all.removeAt(i);qDebug() << "delete successfully!";return true;
+            delete thread;  this->thread_all.removeAt(i);qDebug() << "thread delete successfully!";return true;
         }
     }
     return false;

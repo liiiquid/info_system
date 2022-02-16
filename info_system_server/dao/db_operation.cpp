@@ -37,6 +37,7 @@ db_operation::~db_operation()
 
 QString db_operation::select(QString sql)
 {
+    //mutex.lock();
    int field_size = get_field_num(sql);
     QSqlQuery query(sql);
     QString str = "";
@@ -55,6 +56,7 @@ QString db_operation::select(QString sql)
         }
         str += '0' + query.size();
     }
+    //mutex.unlock();
     return str;
 }
 

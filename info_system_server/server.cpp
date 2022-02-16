@@ -2,7 +2,7 @@
 
 server::server()
 {
-
+ qDebug() << "thread server:: " << QThread::currentThread() << ": is running...";
     this->dbo = new db_operation("QMYSQL","localhost","stu_mgr","root","root");
     this->socket_server = new TServer(this);
     QObject::connect(this->socket_server,SIGNAL(show_new_connection(int)),this,SLOT(print_server_info_log(int)));
@@ -166,8 +166,14 @@ void server::switch_msg_list(QWidget *parent)
 }
 void server::agree_msg()
 {
-    QString sql = cur_msg->content;
-    if(this->dbo->update(sql)) qDebug() << "changed db successfully...";
+    QVector<QString> sqles = message_serialization::analysis_content(cur_msg->content);
+    for(int i = 0; i < sqles.size();i++)
+    {
+        if(this->dbo->update(sqles[i]) >= 0)
+        {
+            qDebug() << "changed db successfully...";
+        }
+    }
     for(int i = 0; i < this->socket_server->unproced_messages.size();i++)
     {
         if(this->cur_msg == socket_server->unproced_messages[i]) {
@@ -408,13 +414,15 @@ void server::agree_add()
 
     QVector<QString> update_add_information;
     QString sql;
+    bool availiable = false;
     if(this->is_add_class)
     {
-        QString attributes_class[4] = {"class_id","stu_num","head_teacher_id","head_student_id"};
+        QString attributes_class[4] = {"class_id","stu_num","head_teacher_id","head_stu_id"};
         for(int i = 0; i < add_container_list.size(); i++)
         {
            if(add_container_list[i][0]->added)
            {
+
                 sql = "INSERT INTO classes values(";
                 for(int j = 0; j < add_container_list[i].size();j++)
                 {
@@ -426,22 +434,22 @@ void server::agree_add()
                 update_add_information.push_back(sql);
                continue;
            }
-
-           if(add_container_list[i][0]->edited)
-           {
-               sql = "UPDATE classes SET ";
-               for(int j = 0; i < add_container_list[i].size();j++)
-               {
-                   sql  += attributes_class[j]; sql += "=";
-                   sql += add_container_list[i][j]->text();
-                   sql += ",";
+            sql = "UPDATE classes SET ";
+           for(int j = 0; j < add_container_list[i].size();j++)
+            {
+               if(add_container_list[i][j]->edited)
+                   {        availiable = true;
+                             sql  += attributes_class[j]; sql += "=";
+                             sql += add_container_list[i][j]->text();
+                             sql += ",";
                }
-               sql[sql.length() -1] = ' ';
-               sql += "WHERE class_id = ";
-               sql += add_container_list[i][0]->text_origin;
-               sql += ";";
-               update_add_information.push_back(sql);
            }
+           sql[sql.length() -1] = ' ';
+           sql += "WHERE class_id = ";
+           sql += add_container_list[i][0]->text_origin;
+           sql += ";";
+           if(availiable){update_add_information.push_back(sql); availiable = false;}
+
 
         }/*for*/
     }
@@ -460,23 +468,29 @@ void server::agree_add()
                 continue;
             }
 
-            if(add_container_list[i][0]->edited)
+            sql = "UPDATE courses SET ";
+           for(int j = 0; j < add_container_list[i].size();j++)
             {
-                 sql = "UPDATE courses SET ";
-                 sql += attributes_course[0];
-                 sql += "= ";
-                 sql += add_container_list[i][0]->text();
-                 sql += ",";
-                 sql += attributes_course[1];
-                 sql += "='";
-                 sql += add_container_list[i][1]->text();
-                 sql += "';";
-                 update_add_information.push_back(sql);
-                 continue;
-            }
+               if(add_container_list[i][j]->edited)
+                   {        availiable = true;
+                     if(j == 0)
+                             {sql  += attributes_course[j]; sql += "=";
+                             sql += add_container_list[i][j]->text();
+                             sql += ",";}
+                       else {sql += attributes_course[j]; sql += "='";
+                         sql += add_container_list[i][j]->text();
+                         sql += "',";}
+
+                     }
+               }
+           sql[sql.length() -1] = ' ';
+           sql += "WHERE course_id = ";
+           sql += add_container_list[i][0]->text_origin;
+           sql += ";";
+           if(availiable){update_add_information.push_back(sql); availiable = false;}
          }
     }
-
+    qDebug() << update_add_information.size();
     for(int i = 0; i < update_add_information.size();i++)
     {
         this->dbo->update(update_add_information[i]);
@@ -853,7 +867,7 @@ void server::scroll_to_bottom(QVector<QVector<label_editable*>>& container)
 {
     int rows = container.size();
     int columns = container[0].size();
-    while(container[rows-1][columns-1]->y() >= 540)
+    while(container[rows-1][columns-1]->y() >= 510)
     {
         for(int i = 0; i < rows; i++)
         {
@@ -881,6 +895,7 @@ void server::info_new_list()
     {
         label = new label_editable();
         label->setText("双击修改信息");
+        label->text_origin= "双击修改信息";
         label->added=true;
         label->setParent(this->scroll_info_exam);
         label->setFixedSize(w,MAIN_LABEL_HEIGHT);
@@ -892,7 +907,7 @@ void server::info_new_list()
     {
         info_page_content_exam[rows][i]->show();
     }
-    if(label->y() >= 570) scroll_to_bottom(info_page_content_exam);
+    if(label->y() >= 510) scroll_to_bottom(info_page_content_exam);
 }
 void server::agree_info()
 {

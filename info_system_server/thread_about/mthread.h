@@ -1,10 +1,8 @@
 #ifndef MTHREAD_H
 #define MTHREAD_H
 #include <QThread>
-#include <QQueue>
-#include <QTcpSocket>
-#include "../utils/message_serialization.h"
-#include "../dispatch/message_operation.h"
+
+#include "m_network/t_socket.h"
 
 class TServer;
 class mthread : public QThread
@@ -16,22 +14,13 @@ public:
     void run();
 
 public slots:
-    void read();
-    void write();
-    void close_socket();
+    void exit_thread();
 signals:
-    void readok();
-    void thread_over(mthread* thread);
-    void new_message();
-    void new_client();
+    void thread_over(mthread*);
 public:
     qintptr socketDescriptor;
     TServer* server;
-    QTcpSocket* socket;
-    QQueue<message*> *msgs;
-    QByteArray cache;
-    message_operation* msg_opr;
-    message_serialization* serial;
+    t_socket* socket;
 };
 
 #endif // MTHREAD_H

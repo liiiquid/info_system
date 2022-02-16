@@ -8,7 +8,7 @@ class TServer;
 class message_operation
 {
 public:
-    message_operation(TServer* server);
+    message_operation(db_operation* db);
     message* msg_dispatch(message* msg);
 
 public:

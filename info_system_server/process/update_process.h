@@ -2,12 +2,12 @@
 #define UPDATE_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class update_process
 {
 public:
-    update_process(TServer* server);
-    TServer* socket_server;
+    update_process(db_operation* dbo);
+    db_operation* dbo;
     message* update_db(message* msg);
 };
 

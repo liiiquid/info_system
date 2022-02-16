@@ -14,6 +14,8 @@ QMAKE_CFLAGS += /utf-8
 
 SOURCES += \
     client.cpp \
+    t_network/t_socket.cpp \
+    thread_about/mthread.cpp \
     user.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -28,6 +30,8 @@ SOURCES += \
     utils/message_serialization.cpp \
 
 HEADERS += \
+    t_network/t_socket.h \
+    thread_about/mthread.h \
     user.h \
     client.h \
     mainwindow.h \

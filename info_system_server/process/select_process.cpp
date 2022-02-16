@@ -1,16 +1,14 @@
 #include "select_process.h"
-#include "../server.h"
+#include "../dao/db_operation.h"
 #include "../utils/message_serialization.h"
-select_process::select_process(TServer* server)
+select_process::select_process(db_operation* dbo)
 {
-    this->socket_server = server;
+    this->dbo = dbo;
 }
 
 message *select_process::select_db(message *msg)
 {
     message_serialization serial;
-    server* ser = socket_server->server_ori;
-    db_operation* dbo = ser->dbo;
     QString result_select = dbo->select(msg->content);
-    return new message(10,0,0,msg->sender,msg->send_type,result_select);
+    return new message(msg->type,0,0,msg->sender,msg->send_type,result_select);
 }

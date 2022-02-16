@@ -11,9 +11,16 @@ MainWindow::MainWindow(QWidget *parent)
     this->set_btn();
     this->set_laebl();
     this->set_edit();
+    this->client.parent = this;
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    timer->start(50);
     setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     setFixedSize(800,600);
     setWindowTitle("学生信息管理系统");
+    this->clearFocus();
+
 }
 
 MainWindow::~MainWindow()
@@ -40,14 +47,15 @@ void MainWindow::set_btn()
         this->btns[i]->setText(btn_text[i]);
         this->btns[i]->setFixedSize(100,30);
         this->btns[i]->setParent(this);
-
         QObject::connect(btns[i],SIGNAL(mbtn_clicked(int)),this,SLOT(btn_process(int)));
         if(i == 0 || i == 2 || i == 4 || i == 5)
             login_page.push_back(this->btns[i]);
         else{
             register_page.push_back(this->btns[i]);
+            this->btns[i]->hide();
         }
     }
+
 }
 void MainWindow::set_laebl()
 {
@@ -92,6 +100,7 @@ void MainWindow::btn_process(int index)
         break;
     case 4:
         enter_register_page();
+        break;
     case 5:
         exit_process();
         break;
@@ -101,49 +110,71 @@ void MainWindow::btn_process(int index)
     }
 }
 
+int r = 0; int g = 30; int b = 50;
+int w = 1; int h = 30;
+void MainWindow::paintEvent(QPaintEvent *e)
+{
+      QPainter p(this);
+     if(isload == 1 && state == 0)
+     {
+         p.setPen(QPen(QColor(r,g,b)));
+         w+=1;
+        if(w == 120) w = 120;
+         p.drawText(350,450,w,h,Qt::AlignLeft,this->client.log_str);
+         r = (r + 1) % 240;
+        g = (g + 2) % 240;
+        b = (b + 3) % 240;
+     }
+     else if(state == 1){
+        p.fillRect(0,0,MAIN_WINDOW_WIDTH,MAIN_WINDOW_HEIGHT,QColor(MAIN_BGCOLOR(240)));
+        p.drawLine(FST_LEVEL_PAGE_X,FST_LEVEL_PAGE_Y,FST_LEVEL_PAGE_X,MAIN_WINDOW_HEIGHT);/*segmentation 1*/
+    }
+}
+void MainWindow::show_loading()
+{
+    if(isload > 0 && state == 0)
+    {
+         setUpdatesEnabled(true);
+         update();
+    }
+
+}
+
 void MainWindow::stu_login_process()
 {
     message msg = get_edit_info();
     msg.send_type = 2;
-    if(this->client_login(msg)) /*repaint the window to the server interface!!!*/
-     {
-        goto_client();}
-    else {}
+    this->client_login(msg); /*repaint the window to the server interface!!!*/
 }
 
 void MainWindow::stu_register_process()
 {
     message msg = get_edit_info();
     msg.send_type = 2;
-    if(this->client_register(msg)) /*alert a dialog announce user the result*/
-    {
-
-    }else{}
+   this->client_register(msg);
 }
 
 void MainWindow::teacher_login_process()
 {
     message msg = get_edit_info();
     msg.send_type = 1;
-    if(this->client_login(msg)) /*repaint the window to the server interface!!!*/
-     {
-        goto_client();}
-    else {}
+    this->client_login(msg);
 }
 
 void MainWindow::teacher_register_process()
 {
     message msg = get_edit_info();
     msg.send_type = 1;
-    if(this->client_register(msg)) /*alert a dialog announce user the result*/
-    {
-
-    }else{}
+    this->client_register(msg) ;/*alert a dialog announce user the result*/
 }
 
 void MainWindow::enter_register_page()
 {
-
+    for(int i  =0; i < login_page.size();i++)
+    {
+        login_page[i]->hide();
+    }
+    for(int i = 0; i < register_page.size();i++) register_page[i]->show();
 }
 bool MainWindow::client_login(message msg)
 {
@@ -152,36 +183,6 @@ bool MainWindow::client_login(message msg)
 bool MainWindow::client_register(message msg)
 {
     return this->client.client_register(msg);
-}
-
-
-void MainWindow::paintEvent(QPaintEvent *e)
-{
-    if(!state) return;
-     QPainter p(this);
-     p.fillRect(0,0,MAIN_WINDOW_WIDTH,MAIN_WINDOW_HEIGHT,QColor(MAIN_BGCOLOR(240)));
-     p.drawLine(FST_LEVEL_PAGE_X,FST_LEVEL_PAGE_Y,FST_LEVEL_PAGE_X,MAIN_WINDOW_HEIGHT);/*segmentation 1*/
-}
-
-
-void MainWindow::goto_client()
-{
-    for(int i = 0; i < btn_size;i++)
-    {
-        btns[i]->hide();
-    }
-    for(int i = 0; i < label_size; i++)
-    {
-       labels[i]->hide();
-    }
-    for(int i = 0; i < edit_size;i++)
-    {
-        edits[i]->hide();
-    }
-    this->state = 1;
-    this->client.show_client(this);
-    update();
-
 }
 
 void MainWindow::mousePressEvent(QMouseEvent*)
@@ -200,8 +201,7 @@ message MainWindow::get_edit_info()
     }
     edit_text += '\n';  /*switch line identifier: \t\n*/
     /*after getting the information of text edit, set the edit to null*/
-    for(int i = 0; i < edit_size;i++)
-        edits[i]->setText("");
+
     return message(0,0,message_serialization::str2int(edits[0]->text()),0,0,edit_text);
 }
 
@@ -219,12 +219,14 @@ void MainWindow::exit_process()
     {
         if(edits[i])delete edits[i];
     }
+    emit destroyed();
     QApplication::exit();
 }
 
 void MainWindow::back_login_page()
 {
-
+    for(int i = 0; i < register_page.size();i++) register_page[i]->hide();
+    for(int i = 0; i < login_page.size();i++) login_page[i]->show();
 }
 
 

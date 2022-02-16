@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QImage>
 #include <QPainter>
+#include <QTimer>
 #include "client.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -11,12 +12,16 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    int state = 0;
 public:
+    int state = 0;
+    int isload = 0;
+    QTimer* timer;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void paintEvent(QPaintEvent* e);
     void mousePressEvent(QMouseEvent*);
+
+
 public:
 /*when there are admins try to login or register, we will get their information of account, and verify the information in database via it*/
     bool client_login(message msg);
@@ -62,7 +67,7 @@ public slots:
     void btn_process(int);
 /*slot process functions*/
 public:
-
+    void show_loading();
     void stu_login_process();
     void stu_register_process();
     void teacher_login_process();

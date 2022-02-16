@@ -116,6 +116,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
 
                  label_editable* label_left = server.add_container_list[i][0];
                  label_editable* label_right = server.add_container_list[i].last();
+                  if(label_left->y() + 60 >= 570 || label_left->y() + 60 <= 30) continue;
                  p.drawLine(label_left->x() + 300 ,label_left->y() + 60,label_right->x() + 500,label_right->y() + 60); /*draw the horizontal line for add controls in add list*/
              }
          }

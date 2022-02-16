@@ -16,6 +16,7 @@ SOURCES += \
     dao/db_operation.cpp \
     dispatch/message_analysis.cpp \
     dispatch/message_operation.cpp \
+    m_network/t_socket.cpp \
     m_network/tserver.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     dao/db_operation.h \
     dispatch/message_analysis.h \
     dispatch/message_operation.h \
+    m_network/t_socket.h \
     m_network/tserver.h \
     mainwindow.h \
     message.h \

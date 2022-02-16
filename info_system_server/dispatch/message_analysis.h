@@ -13,11 +13,11 @@ class server;
 class message_analysis
 {
 public:
-    message_analysis(TServer* server);/*used for getting the socket table of clients*/
+    message_analysis(db_operation* dbo);/*used for getting the socket table of clients*/
     message* msg_analysis(message* msg);
 
 private:
-    TServer* server_socket;
+    db_operation* dbo;
     login_process* login;
     register_process* reg;
     select_process* select;

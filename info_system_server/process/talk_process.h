@@ -2,14 +2,14 @@
 #define TALK_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class talk_process
 {
 public:
-    talk_process(TServer* server);
+    talk_process(db_operation* dbo);
     message* transfer_client(message* msg);
 public:
-    TServer* socket_server;
+    db_operation* dbo;
 };
 
 #endif // TALK_PROCESS_H

@@ -14,13 +14,14 @@ public:
     TServer(server* server_ori);
     ~TServer();
     void incomingConnection(qintptr socketDescriptor);
-    void add_client(int id, QTcpSocket* socket);
-    QTcpSocket* get_client(int id);
+    void add_client(int id, t_socket* socket);
+    t_socket* get_client(int id);
     void add_unproced_message(message* msg);
 public:
     m_thread_pool* thread_pool;
-    QHash<int,QTcpSocket*> socket_clients;
-    QMutex mutex;
+    QHash<int,t_socket*> socket_clients;
+    QMutex mutex_add_client;
+    QMutex mutex_add_unproced;
     QVector<message*> unproced_messages;
     server* server_ori;
 signals:

@@ -2,12 +2,12 @@
 #define IMAGE_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class image_process
 {
 public:
-    image_process(TServer* server);
-    TServer* socket_server;
+    image_process(db_operation* dbo);
+    db_operation* dbo;
     message* image_store(message* msg);
 };
 

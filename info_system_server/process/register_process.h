@@ -2,13 +2,13 @@
 #define REGISTER_PROCESS_H
 #include "message.h"
 
-class TServer;
+class db_operation;
 class register_process
 {
 public:
-    register_process(TServer* server);
+    register_process(db_operation* dbo);
     message* reg_check(message* msg);
-    TServer* socket_server;
+    db_operation* dbo;
 };
 
 #endif // REGISTER_PROCESS_H
