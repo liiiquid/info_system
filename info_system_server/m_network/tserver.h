@@ -17,15 +17,18 @@ public:
     void add_client(int id, t_socket* socket);
     t_socket* get_client(int id);
     void add_unproced_message(message* msg);
+    void remove_client(int id);
+    void close_sockets();
 public:
     m_thread_pool* thread_pool;
     QHash<int,t_socket*> socket_clients;
-    QMutex mutex_add_client;
-    QMutex mutex_add_unproced;
+
     QVector<message*> unproced_messages;
     server* server_ori;
 signals:
     void show_new_connection(int id);
+    void show_new_msg();
+     void user_offline(int key);
 };
 
 #endif // TSERVER_H

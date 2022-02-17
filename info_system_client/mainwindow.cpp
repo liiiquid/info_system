@@ -20,7 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
     setFixedSize(800,600);
     setWindowTitle("学生信息管理系统");
     this->clearFocus();
-
+    setWindowFlags(Qt::FramelessWindowHint); //也是去掉标题栏的语句
+    /*setStyleSheet(QString::fromUtf8("background-image: url(:/images/lookdown_footprint.jpg);/n"
+    "color: rgb(0, 255, 0);/n"
+    "font: 75 16pt ;"));*/
 }
 
 MainWindow::~MainWindow()
@@ -114,8 +117,9 @@ int r = 0; int g = 30; int b = 50;
 int w = 1; int h = 30;
 void MainWindow::paintEvent(QPaintEvent *e)
 {
-      QPainter p(this);
-     if(isload == 1 && state == 0)
+
+     QPainter p(this);
+     if(state == 0)
      {
          p.setPen(QPen(QColor(r,g,b)));
          w+=1;
@@ -151,6 +155,7 @@ void MainWindow::stu_register_process()
 {
     message msg = get_edit_info();
     msg.send_type = 2;
+    msg.type = 3;
    this->client_register(msg);
 }
 
@@ -158,6 +163,7 @@ void MainWindow::teacher_login_process()
 {
     message msg = get_edit_info();
     msg.send_type = 1;
+
     this->client_login(msg);
 }
 
@@ -165,6 +171,7 @@ void MainWindow::teacher_register_process()
 {
     message msg = get_edit_info();
     msg.send_type = 1;
+    msg.type = 3;
     this->client_register(msg) ;/*alert a dialog announce user the result*/
 }
 
@@ -185,9 +192,41 @@ bool MainWindow::client_register(message msg)
     return this->client.client_register(msg);
 }
 
-void MainWindow::mousePressEvent(QMouseEvent*)
+void MainWindow::hide_all(QWidget *parent)
+{
+     for(int i = 0; i < register_page.size();i++) register_page[i]->hide();
+     for(int i  =0; i < login_page.size();i++)
+     {
+         login_page[i]->hide();
+     }
+      for(int i = 0; i < edit_size;i++)
+      {
+          this->edits[i]->hide();
+          this->labels[i]->hide();
+      }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent* e)
 {
     this->setFocus();
+    this->ispress = 1;
+    this->point = e->localPos();
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *e)
+{
+    if(ispress)
+    {
+        QPointF point = e->localPos();
+        int dx = point.x() - this->point.x();
+        int dy = point.y() - this->point.y();
+        this->move(this->x() + dx,this->y() + dy);
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *)
+{
+    this->ispress = 0;
 }
 
 message MainWindow::get_edit_info()

@@ -21,6 +21,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     message.cpp \
+    mevent/m_event.cpp \
     process/image_process.cpp \
     process/login_process.cpp \
     process/register_process.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     m_network/tserver.h \
     mainwindow.h \
     message.h \
+    mevent/m_event.h \
     process/image_process.h \
     process/login_process.h \
     process/register_process.h \

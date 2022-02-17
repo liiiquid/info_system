@@ -9,11 +9,10 @@
 #include "../process/update_process.h"
 #include "../process/image_process.h"
 class TServer;
-class server;
 class message_analysis
 {
 public:
-    message_analysis(db_operation* dbo);/*used for getting the socket table of clients*/
+    message_analysis(db_operation* dbo,TServer* server);/*used for getting the socket table of clients*/
     message* msg_analysis(message* msg);
 
 private:
@@ -23,7 +22,7 @@ private:
     select_process* select;
     talk_process* talk;
     update_process* update;
-    server* server_ori;
+    TServer* server;
     image_process* image;
 };
 

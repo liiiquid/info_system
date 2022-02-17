@@ -1,5 +1,7 @@
 #include "tserver.h"
 #include "../server.h"
+QMutex mutex_add_client;
+QMutex mutex_add_unproced;
 TServer::TServer(server* server) : QTcpServer()
 {
     this->thread_pool = new m_thread_pool(50);
@@ -31,9 +33,24 @@ t_socket *TServer::get_client(int id)
     else return nullptr;
 }
 
+void TServer::remove_client(int id)
+{
+    mutex_add_client.lock();
+    if(this->socket_clients[id]) this->socket_clients.remove(id);
+    emit user_offline(id);
+    mutex_add_client.unlock();
+}
+
+void TServer::close_sockets()
+{
+    for(QHash<int,t_socket*>::Iterator i = this->socket_clients.begin(); i != this->socket_clients.end();i++)
+        i.value()->close();
+}
+
 void TServer::add_unproced_message(message *msg)
 {
     mutex_add_unproced.lock();
     this->unproced_messages.push_back(msg);
+    emit show_new_msg();
     mutex_add_unproced.unlock();
 }

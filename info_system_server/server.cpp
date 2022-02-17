@@ -1,12 +1,13 @@
 #include "server.h"
-
+#include <QMessageBox>
 server::server()
 {
  qDebug() << "thread server:: " << QThread::currentThread() << ": is running...";
     this->dbo = new db_operation("QMYSQL","localhost","stu_mgr","root","root");
     this->socket_server = new TServer(this);
     QObject::connect(this->socket_server,SIGNAL(show_new_connection(int)),this,SLOT(print_server_info_log(int)));
-
+    QObject::connect(this->socket_server,SIGNAL(show_new_msg()),this,SLOT(update_msg_list()));    void user_offline(int key);
+    QObject::connect(this->socket_server,SIGNAL(user_offline(int)),this,SLOT(update_server_info_log(int)));
 /*************************************************************当时只道是寻常 2022 2.11****************************************************************************************************/
 /*-------------------------------------------------------------------------ui object initialization below is -----------------------------------------------------*/
     log_message = new QVector<message*>;
@@ -18,6 +19,8 @@ server::~server()
     if(this->socket_server) delete this->socket_server;
     /*make sure all the old msg are remove*/
     for(int i = 0; i < msg_container_list.size();i++)
+
+
     {if(msg_container_list[0]) delete msg_container_list[0]; msg_container_list.removeFirst();}
     release_ui_vector(all_info_controls);
     release_ui_vector(all_msg_controls);
@@ -31,7 +34,6 @@ server::~server()
             delete this->admins.first();
         this->admins.pop_back();
     }
-
 }
 
 bool server::admin_login(message msg)
@@ -64,18 +66,23 @@ bool server::admin_register(message msg)
 /*default paramters*/
 bool server::server_start()
 {
+    this->server_info_log->setText("正在启动服务器... \n");
     if(this->socket_server->isListening()) return false;
     QHostAddress addr("127.0.0.1");
-    this->socket_server->setMaxPendingConnections(30);
+    this->socket_server->setMaxPendingConnections(300);
     this->socket_server->listen(addr,12345);
+    QString str("服务器启动成功... 服务器监听" );
+    str+="端口:12345 \n";
+    this->server_info_log->setText(str);
     return true;
 }
 
 bool server::server_end()
 {
-    /*for(int i = 0; i < this->socket_server->socket_clients.size();i++)
-        if(this->socket_server->socket_clients[i]) delete this->socket_server->socket_clients[i];*/
+    for(int i = 0; i < this->socket_server->socket_clients.size();i++)
+        if(this->socket_server->socket_clients[i]) socket_server->socket_clients[i]->disconnectFromHost();
     this->socket_server->close();
+    this->server_info_log->setText(this->server_info_log->toPlainText()+ "服务器关闭成功... \n");
     return true;
 }
 
@@ -144,8 +151,9 @@ void server::update_msg_list() /************slot function, this function is in o
 {
     if(ui_page == 1)
     {
-        this->hide_all(parent,1);
+        this->hide_all(parent);
        switch_msg_list(this->parent);
+    }else {
     }
 }
 
@@ -166,9 +174,24 @@ void server::switch_msg_list(QWidget *parent)
 }
 void server::agree_msg()
 {
-    QVector<QString> sqles = message_serialization::analysis_content(cur_msg->content);
+    QVector<QString> sqles;
+    sqles.push_back(cur_msg->content);
+    if(cur_msg->send_type == 1)
+    {
+        QString sql = "INSERT INTO teachers(teacher_id) values(";
+        sql += message_serialization::int2str(cur_msg->sender);
+        sql += ");";
+        sqles.push_back(sql);
+    }
+    else if (cur_msg->send_type == 2){
+        QString sql = "INSERT INTO students(stu_id) values(";
+       sql += message_serialization::int2str(cur_msg->sender);
+        sql += ");";
+        sqles.push_back(sql);
+    }
     for(int i = 0; i < sqles.size();i++)
     {
+        qDebug() << sqles[i];
         if(this->dbo->update(sqles[i]) >= 0)
         {
             qDebug() << "changed db successfully...";
@@ -180,6 +203,7 @@ void server::agree_msg()
             delete cur_msg;
             socket_server->unproced_messages.removeAt(i);
             this->unproced_msg_content_main->setText("");
+            this->unproced_msg_content_top->setText("");
             switch_msg_list(this->parent);
             return;}/*refresh the msg list again*/
     }/*for*/
@@ -204,7 +228,8 @@ void server::disagree_msg()
 /*core function of online numer display*/
 void server::show_online_num(QWidget *parent)
 {
-    qDebug()<<"notification: current online people number is "<<this->socket_server->socket_clients.size();
+
+
 }
 
 void server::show_info_main(QWidget *parent)
@@ -549,7 +574,10 @@ void server::print_msg_page(int index)
 
 void server::print_msg_page_update(message* msg) /*show the content of update type message*/
 {
-    this->unproced_msg_content_top->setText(message_serialization::int2str(msg->sender));
+    QString str;
+    if(msg->send_type == 2) str = "学生注册";
+    else if(msg->send_type == 1) str = "教师注册";
+    this->unproced_msg_content_top->setText(message_serialization::int2str(msg->sender) + str);
     this->unproced_msg_content_main->setText(msg->content);
     this->cur_msg = msg;
     this->unproced_msg_content_top->show();
@@ -561,15 +589,14 @@ void server::print_msg_page_update(message* msg) /*show the content of update ty
 
 void server::print_server_info_log(int id) /*print the new connection info and do other things*/
 {
-    QString str = "id: ";
+    QString str = "用户id为: ";
     str += msg_serial.int2str(id);
-    QTcpSocket* socket = this->socket_server->get_client(id);
-    str += "connected in port: ";
-    str += msg_serial.int2str(socket->peerPort());
-    message* msg = new message(0,id,0,0,0,str);
-    this->log_message->push_back(msg);
-    qDebug() << msg->content;//todo
-    this->parent->update();
+    str += "上线了...  ";
+    str += '\n';
+    str+="当前服务器连接人数: "; str += message_serialization::int2str(this->socket_server->socket_clients.size());
+    str+="\n";
+    this->server_info_log->setText(this->server_info_log->toPlainText() + str);
+    this->server_info_log->update();
 }
 
 void server::get_info_page(int id)
@@ -597,8 +624,6 @@ LEFT JOIN teachers ON teachers.teacher_id = study_record.teacher_id;";
     if(isteacher) set_info_page(result,7);
     else set_info_page(result,6);
 }
-
-
 
 /*************************************************************return to this function after executing set_info_page*************************************************************************/
 
@@ -694,6 +719,15 @@ void server::print_info_page(int id)
 {
     get_info_page(id);
     show_info_page(parent);
+}
+
+void server::update_server_info_log(int id)
+{
+    QString str = "用户";
+    str += message_serialization::int2str(id);
+    str += " 下线了... \n";
+    this->server_info_log->setText(this->server_info_log->toPlainText() + str);
+    this->server_info_log->update();
 }
 
 void server::info_generate_update()
@@ -940,6 +974,7 @@ void server::hide_all(QWidget *parent,int instruct)
     {
     case 0:
         for(i = 0; i < all_server_controls.size();i++) this->all_server_controls[i]->hide();
+        this->server_info_log->hide();
         break;
     case 1:
         for(i = 0; i < msg_container_list.size();i++)this->msg_container_list[i]->hide();
@@ -980,10 +1015,6 @@ bool server::check_server_open()
     if(!is_server_open)
         return false;
     for(int i =0 ; i < labels_server_control;i++) server_control[i]->show();
-    QString str = "";
-    for(int i = 0; i < log_message->size();i++)
-        str += log_message->at(i)->content;
-    server_info_log->setText(str);
     server_info_log->show();
     return true;
 }
@@ -1006,6 +1037,7 @@ bool server::check_info_open()
 bool server::check_msg_open()
 {
     if(!is_msg_open) return false;
+    get_msg_list();
     for(int i = 0; i < msg_container_list.size();i++) msg_container_list[i]->show();
     this->last->show();this->next->show();
     if(this->is_msg_page_open){
@@ -1049,7 +1081,7 @@ QVector<QString> server::analysis_message(message msg)
     return vector;
 }
 
-int i = 0;
+//int i = 0;
 
 void server::test_db()
 {
@@ -1092,7 +1124,6 @@ void server::main_process(int index)
         break;
     case 9:/*last page*/
         this->ui_page = 1;
-        hide_all(this->parent);
         if(this->curend_msg < MSG_LIST_NUM) return;
             this->curend_msg -=MSG_LIST_NUM;
         qDebug() << this->curend_msg;
@@ -1100,7 +1131,6 @@ void server::main_process(int index)
         break;
     case 10:/*next page control*/
         this->ui_page =1;
-        hide_all(parent);
         this->curend_msg += MSG_LIST_NUM;this->switch_msg_list(this->parent); qDebug() << this->curend_msg;
         break;
     case 11:/*agree control*/ /*via 11, 12 label to manage the message send from clients*/
@@ -1246,10 +1276,10 @@ void server::init_info()
     this->info_next->move(INFO_NEXT_LABEL_X,INFO_NEXT_LABEL_Y);
     this->info_last->move(INFO_LAST_LABEL_X,INFO_NEXT_LABEL_Y);
     this->info_title->move(INFO_SELECT_LABEL_X,INFO_SELECT_LABEL_Y);
-    this->info_search->move(INFO_SEARCH_LABEL_X,INFO_SEARCH_LABEL_Y);
-    this->info_specify_search->move(INFO_SPECI_SELECT_X,INFO_SPECI_SELECT_Y);
-    this->info_back->move(INFO_BACK_LABEL_X,INFO_SEARCH_LABEL_Y);
-    this->info_ok->move(INFO_OK_LABEL_X,MSG_AGREE_LABEL_Y);
+    this->info_search->move(230,INFO_SEARCH_LABEL_Y);
+    this->info_specify_search->move(430,INFO_SPECI_SELECT_Y);
+    this->info_back->move(170,INFO_SEARCH_LABEL_Y);
+    this->info_ok->move(330,MSG_AGREE_LABEL_Y);
     this->info_no->move(INFO_NO_LABEL_X,MSG_AGREE_LABEL_Y);
     this->info_add_new->move(500,570);
     this->info_next->setParent(this->parent);
@@ -1260,9 +1290,9 @@ void server::init_info()
     this->info_no->setParent(this->parent);
     this->info_next->setFixedSize(INFO_NEXT_LABEL_WIDTH,MAIN_LABEL_HEIGHT);this->info_last->setFixedSize(INFO_NEXT_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
     this->info_title->setFixedSize(INFO_SELECT_LABEL_WIDTH,INFO_SELECT_LABEL_HEIGHT);this->info_search->setFixedSize(INFO_SEARCH_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
-    this->info_specify_search->setFixedSize(INFO_SPECI_SELECT_WIDTH,MAIN_LABEL_HEIGHT);this->info_specify_search->setFixedSize(INFO_SPECI_SELECT_WIDTH,MAIN_LABEL_HEIGHT);
-    this->info_ok->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT);this->info_no->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT);
-    this->info_back->setFixedSize(INFO_BACK_LABEL_WIDTH,MAIN_LABEL_HEIGHT); this->info_add_new->setFixedSize(INFO_BACK_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
+    this->info_specify_search->setFixedSize(270,MAIN_LABEL_HEIGHT);this->info_specify_search->setFixedSize(INFO_SPECI_SELECT_WIDTH,MAIN_LABEL_HEIGHT);
+    this->info_ok->setFixedSize(70,30);this->info_no->setFixedSize(70,30);
+    this->info_back->setFixedSize(50,MAIN_LABEL_HEIGHT); this->info_add_new->setFixedSize(50,MAIN_LABEL_HEIGHT);
     QObject::connect(this->info_next,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));
     QObject::connect(this->info_last,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));
     QObject::connect(this->info_title,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));
@@ -1316,10 +1346,10 @@ void server::init_add()
     add_control_list[0]->move(ADD_CLASS_CONTROL_X,ADD_CLASS_CONTROL_Y);
     add_control_list[1]->move(ADD_COURSE_CONTROL_X,ADD_COURSE_CONTROL_Y);
     add_ok->move(INFO_OK_LABEL_X,ED_LABEL_Y);
-    add_no->move(INFO_NO_LABEL_X,ED_LABEL_Y);
-    add_add->move(ADD_ADD_LABEL_X,ADD_ADD_LABEL_Y);
+    add_no->move(460,ED_LABEL_Y);
+    add_add->move(530,ADD_ADD_LABEL_Y);
     add_no->setParent(this->parent);add_ok->setParent(this->parent); add_add->setParent(this->parent);
-    add_ok->setFixedSize(ADD_LIST_WIDTH,MAIN_LABEL_HEIGHT);
+    add_ok->setFixedSize(90,MAIN_LABEL_HEIGHT);
     add_no->setFixedSize(ADD_LIST_WIDTH,MAIN_LABEL_HEIGHT);
     add_add->setFixedSize(ADD_LIST_WIDTH,MAIN_LABEL_HEIGHT);
     QObject::connect(add_ok,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));
@@ -1341,13 +1371,13 @@ void server::init_add()
     {
         courses[i]->setParent(this->parent);
         courses[i]->setFixedSize(MAIN_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
-        courses[i]->move(310 + i* 120,0);
+        courses[i]->move(310 + i* 110,0);
     }
     for(int i = 0; i < classes.size();i++)
     {
         classes[i]->setParent(this->parent);
         classes[i]->setFixedSize(MAIN_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
-        classes[i]->move(310 + i* 120,0);
+        classes[i]->move(310 + i* 110,0);
     }
 
 }
@@ -1357,7 +1387,7 @@ void server::init_server()
     if(all_server_controls.size() > 0) return;
     this->server_control[0]->move(ST_LABEL_X,ST_LABEL_Y);
     this->server_control[1]->move(ED_LABEL_X,ED_LABEL_Y);
-    this->server_info_log->move(INFO_LABEL_X,INFO_LABEL_Y);
+    this->server_info_log->move(INFO_LABEL_X+20,INFO_LABEL_Y);
     for(int i = 0; i < labels_server_control;i++)
     {
         this->server_control[i]->setFixedSize(MAIN_LABEL_WIDTH,MAIN_LABEL_HEIGHT);
@@ -1367,7 +1397,7 @@ void server::init_server()
     }
     this->server_info_log->setParent(parent);
     this->server_info_log->setFixedSize(SERVER_INFO_LABEL_WIDTH,SERVER_INFO_LABEL_HEIGHT);
-    all_server_controls.push_back(server_info_log);
+
 }
 
 void server::init_msg()
@@ -1376,7 +1406,7 @@ void server::init_msg()
 
     this->last->move(MSG_LAST_LAEBL_X,MSG_NEXT_LABEL_Y); this->next->move(MSG_NEXT_LABEL_X,MSG_NEXT_LABEL_Y);
     this->msg_ok->move(MSG_AGREE_LABEL_X,MSG_AGREE_LABEL_Y);this->msg_no->move(MSG_DISAGR_LABEL_X,MSG_AGREE_LABEL_Y);
-    this->unproced_msg_content_top->move(MSG_CONTENT_TOP_X,MSG_CONTENT_TOP_Y);this->unproced_msg_content_main->move(MSG_CONTENT_MAIN_X,MSG_CONTENT_MAIN_Y);
+    this->unproced_msg_content_top->move(320,MSG_CONTENT_TOP_Y);this->unproced_msg_content_main->move(320,MSG_CONTENT_MAIN_Y);
 
     this->last->setParent(this->parent);this->next->setParent(this->parent);
     this->msg_ok->setParent(this->parent);this->msg_no->setParent(this->parent);
@@ -1384,7 +1414,7 @@ void server::init_msg()
 
     this->last->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT); this->next->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT);
     this->msg_ok->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT); this->msg_no->setFixedSize(MSG_NEXT_LABEL_WIDTH,MSG_NEXT_LABEL_HEIGHT);
-    this->unproced_msg_content_main->setFixedSize(MSG_CONTENT_MAIN_WIDTH,MSG_CONTENT_MAIN_HEIGHT);this->unproced_msg_content_top->setFixedSize(MSG_CONTENT_MAIN_WIDTH,MAIN_LABEL_HEIGHT);
+    this->unproced_msg_content_main->setFixedSize(600,510);this->unproced_msg_content_top->setFixedSize(600,MAIN_LABEL_HEIGHT);
 
     QObject::connect(this->next,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));QObject::connect(this->last,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));
     QObject::connect(this->msg_ok,SIGNAL(label_clicked(int)),this,SLOT(main_process(int))); QObject::connect(this->msg_no,SIGNAL(label_clicked(int)),this,SLOT(main_process(int)));

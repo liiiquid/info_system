@@ -103,7 +103,7 @@ public:
     MLabel* labels[labels_main_list] = {new MLabel(IDENTIFIER_MAIN,0,"服务器控制"),new MLabel(IDENTIFIER_MAIN,1,"消息"),new MLabel(IDENTIFIER_MAIN,2,"退出"),new MLabel(IDENTIFIER_MAIN,13,"信息管理"), new MLabel(IDENTIFIER_MAIN,25,"添加")};
     /*0 - server option*/int is_server_open = 0;
     MLabel* server_control[labels_server_control] = {new MLabel(IDENTIFIER_MAIN,3,"开启服务器"),new MLabel(IDENTIFIER_MAIN,4,"关闭服务器")};
-    MLabel* server_info_log = new MLabel(IDENTIFIER_MAIN,5);
+    QTextEdit *server_info_log = new QTextEdit();
     QVector<message*>* log_message;/*print in server_info_log page*/
     /*1 - message option*/
 
@@ -112,8 +112,8 @@ public:
     QVector<MLabel*> msg_container_list;/*the container of msg list*/ MLabel* last = new MLabel(IDENTIFIER_MAIN,9,"上一页");MLabel* next = new MLabel(IDENTIFIER_MAIN,10,"下一页"); /*last page and next page control*/
     MLabel* unproced_msg_content_top = new MLabel(IDENTIFIER_MAIN,7);
     MLabel* unproced_msg_content_main = new MLabel(IDENTIFIER_MAIN,8);
-    MLabel* msg_ok = new MLabel(IDENTIFIER_MAIN,11);
-    MLabel* msg_no = new MLabel(IDENTIFIER_MAIN,12);
+    MLabel* msg_ok = new MLabel(IDENTIFIER_MAIN,11,"同意");
+    MLabel* msg_no = new MLabel(IDENTIFIER_MAIN,12,"拒绝");
 
     /*2 - close the server*/
 
@@ -149,6 +149,7 @@ public slots:
     void update_msg_list();/*called when unproced message is changed*/
     void update_online_num();/*called when new client connect successfully*/
     void print_info_page(int);
+    void update_server_info_log(int);
 public:/*init all the ui controls*/
     QVector<MLabel*> all_server_controls;
     QVector<MLabel*> all_msg_controls;

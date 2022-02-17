@@ -6,6 +6,7 @@
 #include "../dao/db_operation.h"
 #include <QThread>
 #include <QQueue>
+#include "../mevent/m_event.h"
 class TServer;
 class t_socket : public QTcpSocket
 {
@@ -18,6 +19,7 @@ public:
     TServer* server;
     db_operation* dbo;
     static QMutex mutex;
+    bool event(QEvent*);
 signals:
     void readok();
     void socket_close();

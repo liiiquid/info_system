@@ -81,7 +81,7 @@ QByteArray message_serialization::serialize(message* msg)
     sended += int2str((*msg).receiver_type);
     sended += SERIAL_FMT;
     sended += ((*msg).content.toUtf8()).constData();
-    return sended;
+     return sended;
 }
 
 /*unserialize uft-8 encode to message format*/

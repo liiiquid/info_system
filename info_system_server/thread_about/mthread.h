@@ -17,6 +17,7 @@ public slots:
     void exit_thread();
 signals:
     void thread_over(mthread*);
+
 public:
     qintptr socketDescriptor;
     TServer* server;

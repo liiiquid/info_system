@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_mthread_t {
-    QByteArrayData data[8];
-    char stringdata0[68];
+    QByteArrayData data[9];
+    char stringdata0[84];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -36,13 +36,14 @@ QT_MOC_LITERAL(1, 8, 7), // "read_ok"
 QT_MOC_LITERAL(2, 16, 0), // ""
 QT_MOC_LITERAL(3, 17, 10), // "process_ok"
 QT_MOC_LITERAL(4, 28, 14), // "connect_failed"
-QT_MOC_LITERAL(5, 43, 4), // "read"
-QT_MOC_LITERAL(6, 48, 7), // "process"
-QT_MOC_LITERAL(7, 56, 11) // "quit_thread"
+QT_MOC_LITERAL(5, 43, 15), // "connect_success"
+QT_MOC_LITERAL(6, 59, 4), // "read"
+QT_MOC_LITERAL(7, 64, 7), // "process"
+QT_MOC_LITERAL(8, 72, 11) // "quit_thread"
 
     },
     "mthread\0read_ok\0\0process_ok\0connect_failed\0"
-    "read\0process\0quit_thread"
+    "connect_success\0read\0process\0quit_thread"
 };
 #undef QT_MOC_LITERAL
 
@@ -52,24 +53,26 @@ static const uint qt_meta_data_mthread[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       6,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       3,       // signalCount
+       4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    0,   44,    2, 0x06 /* Public */,
-       3,    0,   45,    2, 0x06 /* Public */,
-       4,    0,   46,    2, 0x06 /* Public */,
+       1,    0,   49,    2, 0x06 /* Public */,
+       3,    0,   50,    2, 0x06 /* Public */,
+       4,    0,   51,    2, 0x06 /* Public */,
+       5,    0,   52,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   47,    2, 0x0a /* Public */,
-       6,    0,   48,    2, 0x0a /* Public */,
-       7,    0,   49,    2, 0x0a /* Public */,
+       6,    0,   53,    2, 0x0a /* Public */,
+       7,    0,   54,    2, 0x0a /* Public */,
+       8,    0,   55,    2, 0x0a /* Public */,
 
  // signals: parameters
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -91,9 +94,10 @@ void mthread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
         case 0: _t->read_ok(); break;
         case 1: _t->process_ok(); break;
         case 2: _t->connect_failed(); break;
-        case 3: _t->read(); break;
-        case 4: _t->process(); break;
-        case 5: _t->quit_thread(); break;
+        case 3: _t->connect_success(); break;
+        case 4: _t->read(); break;
+        case 5: _t->process(); break;
+        case 6: _t->quit_thread(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -116,6 +120,13 @@ void mthread::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
             using _t = void (mthread::*)();
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&mthread::connect_failed)) {
                 *result = 2;
+                return;
+            }
+        }
+        {
+            using _t = void (mthread::*)();
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&mthread::connect_success)) {
+                *result = 3;
                 return;
             }
         }
@@ -152,13 +163,13 @@ int mthread::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 6)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 6;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 6)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 6;
+        _id -= 7;
     }
     return _id;
 }
@@ -179,6 +190,12 @@ void mthread::process_ok()
 void mthread::connect_failed()
 {
     QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
+}
+
+// SIGNAL 3
+void mthread::connect_success()
+{
+    QMetaObject::activate(this, &staticMetaObject, 3, nullptr);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

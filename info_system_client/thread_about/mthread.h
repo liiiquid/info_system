@@ -26,6 +26,7 @@ signals:
     void read_ok();
     void process_ok();
     void connect_failed();
+    void connect_success();
 public slots:
     void read();
     void process();

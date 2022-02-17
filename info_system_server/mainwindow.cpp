@@ -90,7 +90,6 @@ bool MainWindow::admin_register(message msg)
     return this->server.admin_register(msg);
 }
 
-
 void MainWindow::paintEvent(QPaintEvent *e)
 {
     if(!state) return;
@@ -113,7 +112,6 @@ void MainWindow::paintEvent(QPaintEvent *e)
              p.drawLine(300,30,800,30);
              for(int i = 0; i < server.add_container_list.size();i++)
              {
-
                  label_editable* label_left = server.add_container_list[i][0];
                  label_editable* label_right = server.add_container_list[i].last();
                   if(label_left->y() + 60 >= 570 || label_left->y() + 60 <= 30) continue;

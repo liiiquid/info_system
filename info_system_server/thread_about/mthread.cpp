@@ -23,6 +23,8 @@ void mthread::run()
 /*slot function*/
 void mthread::exit_thread()
 {
+    int key = this->server->socket_clients.key(this->socket);
+    if(key != 0) this->server->remove_client(key);
     delete socket;
     this->exit();
     emit thread_over(this);

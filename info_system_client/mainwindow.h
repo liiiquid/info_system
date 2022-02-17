@@ -15,20 +15,22 @@ class MainWindow : public QMainWindow
 public:
     int state = 0;
     int isload = 0;
+    int ispress = 0;
     QTimer* timer;
+    QPointF point;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void paintEvent(QPaintEvent* e);
     void mousePressEvent(QMouseEvent*);
-
-
+    void mouseMoveEvent(QMouseEvent*);
+    void mouseReleaseEvent(QMouseEvent*);
 public:
 /*when there are admins try to login or register, we will get their information of account, and verify the information in database via it*/
     bool client_login(message msg);
     bool client_register(message msg);
 
 /*server ui interface*/
-    void goto_client();
+    void hide_all(QWidget* parent);
 /*control the server, if the server is start, then begin to listen in a port, or stop listenning*/
 
 
