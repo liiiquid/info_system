@@ -91,7 +91,7 @@ message* message_serialization::unserialize(QString str)
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QVector<QString> strs = split(str,QString(SERIAL_FMT));
     if(strs.size() != NUM_ATTRIBUTE)
-    {qDebug() << "message exception...  message_serialization() ";return new message(0,0,0,0,0,str);}
+    {qDebug() << "message exception...  message_serialization() ";return new message(99,0,0,0,0,str);}
     msg->type = str2int(strs[0]);
     msg->sender = str2int(strs[1]);
     msg->send_type = str2int(strs[2]);

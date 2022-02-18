@@ -15,8 +15,8 @@ void MLabel::mousePressEvent(QMouseEvent*)
         emit label_clicked(this->index);
     else if(this->identifier ==IDENTIFIER_MSG)
         emit msg_clicked(this->index);
-    else if(this->identifier == IDENTIFIER_INFO)
-        emit info_clicked(this->index);
+    else if(this->identifier == IDENTIFIER_CONTACT)
+        emit contact_clicked(this->index);
 }
 
 
@@ -24,29 +24,30 @@ void MLabel::mousePressEvent(QMouseEvent*)
 void MLabel::enterEvent(QEvent *)
 {
     isenter = 1;
+    update();
 }
 
 void MLabel::leaveEvent(QEvent *)
 {
     isenter = 0;
+    update();
 }
 
 void MLabel::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    p.drawText(2,10,this->width(),this->height(),Qt::AlignLeft,this->text());
+    p.setPen(QColor(0,0,0));
 
     if(isenter)
     {
-        p.drawRect(0,0,this->width(),this->height());
+        p.fillRect(0,0,this->width(),this->height(),QBrush(QColor(190 , 231 ,233)));
     }
     else{
-        p.setPen(p.background().color());
-        p.drawRect(0,0,this->width(),this->height());
+         p.fillRect(0,0,this->width(),this->height(),QBrush(QColor(250,250,250)));
     }
+    p.drawText(0,0,this->width(),this->height(),Qt::AlignCenter,this->text());
 
 }
-
 
 void MLabel::setId(QString newId)
 {

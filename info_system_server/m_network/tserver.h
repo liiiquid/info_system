@@ -18,6 +18,7 @@ public:
     t_socket* get_client(int id);
     void add_unproced_message(message* msg);
     void remove_client(int id);
+    void remove_client(t_socket* socket);
     void close_sockets();
 public:
     m_thread_pool* thread_pool;

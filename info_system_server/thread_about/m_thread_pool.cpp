@@ -9,6 +9,7 @@ bool m_thread_pool::start(mthread *thread)
 {
     if(this->curnum > this->size) return false;
     this->thread_all.append(thread);
+    this->curnum++;
     thread->start();
     return true;
 }
@@ -34,8 +35,11 @@ bool m_thread_pool::close_wait_for_all()
     {
         if(this->thread_all.at(i)->isRunning())
         {
-            continue;
-        }else {delete this->thread_all.at(i); this->thread_all.removeAt(i);}
+            thread_all.at(i)->terminate();
+            thread_all.at(i)->deleteLater();
+            qDebug() << "thread force deleted...";
+        }
+        delete this->thread_all.at(i); this->thread_all.removeAt(i);
     }
     return true;
 }

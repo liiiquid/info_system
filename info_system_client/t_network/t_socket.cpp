@@ -17,3 +17,25 @@ void t_socket::write_out(message *mg)
     }
 
 }
+
+void t_socket::close_self()
+{
+    this->disconnectFromHost();
+}
+
+bool t_socket::event(QEvent *e)
+{
+     switch(e->type())
+     {
+        case QEvent::User+1:
+        {
+            this->disconnectFromHost();
+            return true;
+        }
+         break;
+     default:
+         break;
+     }
+
+     return QTcpSocket::event(e);
+}

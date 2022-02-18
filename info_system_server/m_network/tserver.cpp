@@ -2,6 +2,7 @@
 #include "../server.h"
 QMutex mutex_add_client;
 QMutex mutex_add_unproced;
+QMutex mutex_remove_client;
 TServer::TServer(server* server) : QTcpServer()
 {
     this->thread_pool = new m_thread_pool(50);
@@ -33,14 +34,28 @@ t_socket *TServer::get_client(int id)
     else return nullptr;
 }
 
-void TServer::remove_client(int id)
+void TServer::remove_client(int id)/*eliminated...*/
+{
+    //mutex_remove_client.lock();
+    if(this->socket_clients[id]) this->socket_clients.remove(id);
+    qDebug() << "current online num: " << message_serialization::int2str(this->socket_clients.size());
+    emit user_offline(id);
+    //mutex_remove_client.unlock();
+}
+void TServer::remove_client(t_socket* socket)
 {
     mutex_add_client.lock();
-    if(this->socket_clients[id]) this->socket_clients.remove(id);
-    emit user_offline(id);
-    mutex_add_client.unlock();
+    qDebug() << "current executing thread: " << QThread::currentThread();
+   for(QHash<int,t_socket*>::Iterator i = this->socket_clients.begin();i != this->socket_clients.end();i++)
+   {
+       if(i.value() == socket)
+       {
+           int id = i.key();
+           this->socket_clients.erase(i); emit user_offline(id);break;
+       }
+   }
+   mutex_add_client.unlock();
 }
-
 void TServer::close_sockets()
 {
     for(QHash<int,t_socket*>::Iterator i = this->socket_clients.begin(); i != this->socket_clients.end();i++)

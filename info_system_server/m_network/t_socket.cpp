@@ -25,6 +25,12 @@ bool t_socket::event(QEvent *e)
             write(message_serialization::serialize(&event->mg));
         }
             return true;
+        case QEvent::User+2:
+    {
+        this->disconnectFromHost();
+        qDebug() << "disconnecting from host...";
+        return true;
+    }
     default:
         break;
     }
@@ -36,16 +42,18 @@ void t_socket::close_socket()
     {
         delete msgs->dequeue();
     }
+    this->server->remove_client(this);
     delete msg_opr;
-
     delete dbo;
     this->close();
+
     emit socket_close();
 }
 void t_socket::read()
 {
     QByteArray array =  this->readAll();
     message* mg = message_serialization::unserialize(array);
+    mg->print();
     msgs->enqueue(mg);
     emit readok();
 }

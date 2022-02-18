@@ -79,8 +79,15 @@ bool server::server_start()
 
 bool server::server_end()
 {
-    for(int i = 0; i < this->socket_server->socket_clients.size();i++)
-        if(this->socket_server->socket_clients[i]) socket_server->socket_clients[i]->disconnectFromHost();
+    for(QHash<int,t_socket*>::Iterator i = this->socket_server->socket_clients.begin(); i != this->socket_server->socket_clients.end();i++)
+   {
+        if(i.key() > 10000)
+        {
+           m_event* ev = new m_event(QEvent::Type(QEvent::User+2));
+           QCoreApplication::postEvent(i.value(),ev);
+        }
+    }
+    //this->socket_server->thread_pool->close_wait_for_all();
     this->socket_server->close();
     this->server_info_log->setText(this->server_info_log->toPlainText()+ "服务器关闭成功... \n");
     return true;
@@ -595,6 +602,7 @@ void server::print_server_info_log(int id) /*print the new connection info and d
     str += '\n';
     str+="当前服务器连接人数: "; str += message_serialization::int2str(this->socket_server->socket_clients.size());
     str+="\n";
+    qDebug() << str;
     this->server_info_log->setText(this->server_info_log->toPlainText() + str);
     this->server_info_log->update();
 }
@@ -726,6 +734,7 @@ void server::update_server_info_log(int id)
     QString str = "用户";
     str += message_serialization::int2str(id);
     str += " 下线了... \n";
+
     this->server_info_log->setText(this->server_info_log->toPlainText() + str);
     this->server_info_log->update();
 }

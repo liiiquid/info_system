@@ -13,7 +13,6 @@ public:
     int isload_log = 0;
 public:
     void mousePressEvent(QMouseEvent* e);
-    //void mouseMoveEvent(QMouseEvent* e);
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
     void set_msg_type(int type);
@@ -26,7 +25,8 @@ public:
 signals:
     void label_clicked(int);
     void msg_clicked(int);
-    void info_clicked(int);
+    void contact_clicked(int);
+
 };
 
 #endif // MLABEL_H

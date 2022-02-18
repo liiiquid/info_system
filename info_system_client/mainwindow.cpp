@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->set_laebl();
     this->set_edit();
     this->client.parent = this;
-
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     timer->start(50);
@@ -67,10 +66,12 @@ void MainWindow::set_laebl()
     for(int i = 0; i < label_size;i++)
     {
         this->labels[i]->setText(label_text[i]);
-        this->labels[i]->setFixedSize(LABEL_WIDTH,30);
+        this->labels[i]->setFixedSize(30,30);
         this->labels[i]->setParent(this);
+        this->labels[i]->hide();
         this->labels[i]->show();
     }
+
 }
 void MainWindow::set_edit()
 {
@@ -128,10 +129,14 @@ void MainWindow::paintEvent(QPaintEvent *e)
          r = (r + 1) % 240;
         g = (g + 2) % 240;
         b = (b + 3) % 240;
+        if(this->client.islogin)
+        {
+            this->timer->setSingleShot(true);
+        }
      }
      else if(state == 1){
         p.fillRect(0,0,MAIN_WINDOW_WIDTH,MAIN_WINDOW_HEIGHT,QColor(MAIN_BGCOLOR(240)));
-        p.drawLine(FST_LEVEL_PAGE_X,FST_LEVEL_PAGE_Y,FST_LEVEL_PAGE_X,MAIN_WINDOW_HEIGHT);/*segmentation 1*/
+        p.drawLine(250,FST_LEVEL_PAGE_Y,250,MAIN_WINDOW_HEIGHT);/*segmentation 1*/
     }
 }
 void MainWindow::show_loading()
@@ -265,7 +270,7 @@ void MainWindow::exit_process()
 void MainWindow::back_login_page()
 {
     for(int i = 0; i < register_page.size();i++) register_page[i]->hide();
-    for(int i = 0; i < login_page.size();i++) login_page[i]->show();
+    for(int i = 0; i < login_page.size();i++) {login_page[i]->show(); }
 }
 
 

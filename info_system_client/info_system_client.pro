@@ -14,8 +14,12 @@ QMAKE_CFLAGS += /utf-8
 
 SOURCES += \
     client.cpp \
+    mevent/m_event.cpp \
     t_network/t_socket.cpp \
     thread_about/mthread.cpp \
+    ui_class/head_label.cpp \
+    ui_class/m_switch_label.cpp \
+    ui_class/m_text_edit.cpp \
     user.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -30,8 +34,12 @@ SOURCES += \
     utils/message_serialization.cpp \
 
 HEADERS += \
+    mevent/m_event.h \
     t_network/t_socket.h \
     thread_about/mthread.h \
+    ui_class/head_label.h \
+    ui_class/m_switch_label.h \
+    ui_class/m_text_edit.h \
     user.h \
     client.h \
     mainwindow.h \

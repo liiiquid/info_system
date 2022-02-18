@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MLabel_t {
     QByteArrayData data[5];
-    char stringdata0[47];
+    char stringdata0[50];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,11 +35,11 @@ QT_MOC_LITERAL(0, 0, 6), // "MLabel"
 QT_MOC_LITERAL(1, 7, 13), // "label_clicked"
 QT_MOC_LITERAL(2, 21, 0), // ""
 QT_MOC_LITERAL(3, 22, 11), // "msg_clicked"
-QT_MOC_LITERAL(4, 34, 12) // "info_clicked"
+QT_MOC_LITERAL(4, 34, 15) // "contact_clicked"
 
     },
     "MLabel\0label_clicked\0\0msg_clicked\0"
-    "info_clicked"
+    "contact_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -77,7 +77,7 @@ void MLabel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->label_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 1: _t->msg_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 2: _t->info_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->contact_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -98,7 +98,7 @@ void MLabel::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         }
         {
             using _t = void (MLabel::*)(int );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MLabel::info_clicked)) {
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&MLabel::contact_clicked)) {
                 *result = 2;
                 return;
             }
@@ -161,7 +161,7 @@ void MLabel::msg_clicked(int _t1)
 }
 
 // SIGNAL 2
-void MLabel::info_clicked(int _t1)
+void MLabel::contact_clicked(int _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 2, _a);

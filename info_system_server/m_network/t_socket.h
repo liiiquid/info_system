@@ -20,6 +20,7 @@ public:
     db_operation* dbo;
     static QMutex mutex;
     bool event(QEvent*);
+    int id;
 signals:
     void readok();
     void socket_close();
