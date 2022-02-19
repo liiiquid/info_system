@@ -15,6 +15,9 @@ public:
     static QString int2str(int n);
     static int str2int(QString str);
     static QVector<QString> split(QString str, QString regular);
+    static QByteArray serialize_2(QVector<message*>* msgs);
+    static QVector<QString> analysis_serialize_2(QString msgs);
+    static QVector<message*> unserialize_2(QVector<QString>& str_input);
 };
 
 #endif // MESSAGE_SERIALIZATION_H

@@ -1,7 +1,9 @@
 #include "head_label.h"
 #include <QPainter>
-head_label::head_label(int is_contact) :  QLabel()
+#include "../user.h"
+head_label::head_label(user *user, int is_contact) :  QLabel()
 {
+    this->parent = user;
     this->is_contact = is_contact;
 }
 
@@ -27,8 +29,8 @@ void head_label::paintEvent(QPaintEvent* )
 
 void head_label::mousePressEvent(QMouseEvent *)
 {
-    /*if(is_contact) emit contact_clicked(this->id);
-    else emit info_clicked(this->id);*/
+    if(is_contact) emit contact_clicked(this->id);
+    else emit info_clicked(this->id);
 }
 
 void head_label::enterEvent(QEvent*)

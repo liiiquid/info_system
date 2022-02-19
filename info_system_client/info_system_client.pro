@@ -31,7 +31,7 @@ SOURCES += \
     ui_class/select_label.cpp \
     ui_class/text_edit.cpp \
     ui_class/scroll_label.cpp \
-    utils/message_serialization.cpp \
+    utils/message_serialization.cpp
 
 HEADERS += \
     mevent/m_event.h \
@@ -52,9 +52,9 @@ HEADERS += \
     ui_class/text_edit.h \
     ui_class/ui_config.h \
     ui_class/scroll_label.h \
-    utils/message_serialization.h
-
+    utils/message_serialization.h \
     user.h
+
 FORMS += \
     mainwindow.ui
 

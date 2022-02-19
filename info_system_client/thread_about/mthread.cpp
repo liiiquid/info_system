@@ -28,6 +28,7 @@ void mthread::run()
             QObject::connect(this->socket,&t_socket::disconnected,this,&mthread::quit_thread);
             QObject::connect(this->client_ptr,SIGNAL(write_to_server(message*)),this->socket,SLOT(write_out(message*)));
             QObject::connect(this,&mthread::user_exit,this->socket,&t_socket::close_self);
+            QObject::connect(this->client_ptr,SIGNAL(write_to_server_2(QVector<message*>*)),this->socket,SLOT(write_out_2(QVector<message*>*)));
             this->client_ptr->isconnected= 1;
             qDebug() << "connect success!!!";
             break;
@@ -43,14 +44,18 @@ void mthread::run()
 void mthread::read()
 {
     this->shared = this->socket->readAll();
-    emit read_ok();
+    QVector<QString> mgs_str = message_serialization::analysis_serialize_2(shared);
+    for(int i = 0; i < mgs_str.size();i++)
+    {
+        message* tm = message_serialization::unserialize(mgs_str[i]);
+         this->client_ptr->read_msgs.enqueue(tm);
+    }
+    emit process_ok();
 }
 
 void mthread::process()
 {
-    message* tm = message_serialization::unserialize(this->shared);
-    this->client_ptr->read_msgs.enqueue(tm);
-    emit process_ok();
+
 }
 
 void mthread::close_thread()

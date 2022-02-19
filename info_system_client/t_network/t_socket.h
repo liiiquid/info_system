@@ -15,6 +15,7 @@ public:
     t_socket();
 public slots:
      void write_out(message*);
+     void write_out_2(QVector<message*>* mgs);
      void close_self();
      bool event(QEvent*);
 };

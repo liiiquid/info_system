@@ -52,24 +52,29 @@ void t_socket::close_socket()
 void t_socket::read()
 {
     QByteArray array =  this->readAll();
-    message* mg = message_serialization::unserialize(array);
-    mg->print();
-    msgs->enqueue(mg);
+    qDebug() << array;
+    QVector<QString> msgs_str = message_serialization::analysis_serialize_2(array);
+    QVector<message*> mgs = message_serialization::unserialize_2(msgs_str);
+    for(int i = 0; i < mgs.size();i++)
+    {
+        msgs->enqueue(mgs[i]);
+    }
     emit readok();
 }
 
 void t_socket::write_process()
 {
+    while(msgs->size() > 0)
+    {
         message* mg = msgs->dequeue();
         message* result = msg_opr->msg_dispatch(mg);
         if(result->type == 7) {this->server->add_unproced_message(result); delete mg;return;}
         if(result->type == 12) {this->server->add_client(result->sender,this);}
         this->write(message_serialization::serialize(result));
+        this->flush();
         delete mg;
         delete result;
-
-
-
+    }
 }
 
 

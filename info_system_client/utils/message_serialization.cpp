@@ -101,6 +101,73 @@ message* message_serialization::unserialize(QString str)
     return msg;
 }
 
+/*serialize message to utf-8 encode*/
+QByteArray message_serialization::serialize_2(QVector<message*>* msgs)
+{
+    QByteArray sended = "";
+    for(int i = 0; i < msgs->size();i++)
+    {
+        sended += int2str((*msgs->at(i)).type);
+        sended += SERIAL_FMT;
+        sended += int2str((*msgs->at(i)).sender);
+        sended += SERIAL_FMT;
+        sended += int2str((*msgs->at(i)).send_type);
+        sended += SERIAL_FMT;
+        sended += int2str((*msgs->at(i)).receiver);
+        sended += SERIAL_FMT;
+        sended += int2str((*msgs->at(i)).receiver_type);
+        sended += SERIAL_FMT;
+        sended += ((*msgs->at(i)).content.toUtf8()).constData();
+        sended += '\v';
+     }
+    return sended;
+}
+
+QVector<QString> message_serialization::analysis_serialize_2(QString msgs)
+{
+    QVector<QString> msgs_str;
+    QString str = "";
+     QTextCodec *codec = QTextCodec::codecForName("utf-8");
+     codec->fromUnicode(msgs);
+    for(int i = 0; i < msgs.length();i++)
+    {
+       if(msgs[i] == '\v' || i == msgs.length() - 1)
+       {
+           if(msgs.length() - 1 == i)
+           {
+               str += ';';
+           }
+           msgs_str.push_back(str); str = "";
+       }else{
+           str+=msgs[i];
+       }
+    }
+    return msgs_str;
+}
+
+/*unserialize uft-8 encode to message format*/
+QVector<message*> message_serialization::unserialize_2(QVector<QString>& str_input)
+{
+    QVector<message*> ret_msgs;
+    for(int i = 0; i < str_input.size();i++)
+    {
+        message* msg = new message();
+        QTextCodec *codec = QTextCodec::codecForName("utf-8");
+        QVector<QString> strs = split(str_input[i],QString(SERIAL_FMT));
+        if(strs.size() != NUM_ATTRIBUTE)
+        {qDebug() << "message exception...  message_serialization() ";ret_msgs.push_back(new message(0,0,0,0,0,"解析消息错误...")); return ret_msgs;}
+        msg->type = str2int(strs[0]);
+        msg->sender = str2int(strs[1]);
+        msg->send_type = str2int(strs[2]);
+        msg->receiver = str2int(strs[3]);
+        msg->receiver_type = str2int(strs[4]);
+        msg->content = QString(codec->fromUnicode(strs[5]));
+        ret_msgs.push_back(msg);
+    }
+    return ret_msgs;
+}
+
+
 QVector<QString> message_serialization::analysis_content(QString content)
 {
     QVector<QString> res;

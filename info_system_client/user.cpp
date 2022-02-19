@@ -11,10 +11,10 @@ user::user(int id, QString name, int type,MainWindow* parent,int x,int y, int wi
     this->name = name;
     this->type = type;
     this->parent = parent;
-    this->label = new head_label();
-    label->move(this->x,this->y);
+    this->label = new head_label(this);
+    label->move(x,y);
     label->setParent(this->parent);
-    label->setFixedSize(this->width,this->height);
+    label->setFixedSize(width,height);
     label->id = this->id;
 }
 
