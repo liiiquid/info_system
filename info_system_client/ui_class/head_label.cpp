@@ -16,11 +16,14 @@ void head_label::paintEvent(QPaintEvent* )
      }else{
          p.fillRect(0,0,this->width(),this->height(),QBrush(QColor(250,250,250)));
      }
-    p.drawImage(QRect(0,0,50,50),*this->img);
+     if(this->img)
+     {
+         p.drawImage(QRect(0,0,50,50),*this->img);
+     }
     p.setPen(QColor(0,0,0));
     if(is_contact)
     {
-        p.drawText(QRect(50,0,200,50),Qt::AlignLeft,this->text());
+        p.drawText(QRect(50,10,200,50),Qt::AlignLeft,this->text());
     }else{
         p.drawText(QRect(50,0,200,25),Qt::AlignLeft,this->text());
         p.drawText(QRect(50,25,200,25),Qt::AlignLeft,this->text_assistant);
@@ -29,8 +32,13 @@ void head_label::paintEvent(QPaintEvent* )
 
 void head_label::mousePressEvent(QMouseEvent *)
 {
-    if(is_contact) emit contact_clicked(this->id);
-    else emit info_clicked(this->id);
+    if(this->is_level == 1)/*if is merge*/
+    {
+        if(this->is_open == 1) this->is_open = 0;
+        else this->is_open = 1;
+    }
+    if(is_contact) emit contact_clicked(this);
+    else emit info_clicked(this);
 }
 
 void head_label::enterEvent(QEvent*)

@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_head_label_t {
-    QByteArrayData data[5];
-    char stringdata0[44];
+    QByteArrayData data[6];
+    char stringdata0[58];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -34,12 +34,13 @@ static const qt_meta_stringdata_head_label_t qt_meta_stringdata_head_label = {
 QT_MOC_LITERAL(0, 0, 10), // "head_label"
 QT_MOC_LITERAL(1, 11, 15), // "contact_clicked"
 QT_MOC_LITERAL(2, 27, 0), // ""
-QT_MOC_LITERAL(3, 28, 2), // "id"
-QT_MOC_LITERAL(4, 31, 12) // "info_clicked"
+QT_MOC_LITERAL(3, 28, 11), // "head_label*"
+QT_MOC_LITERAL(4, 40, 4), // "ellm"
+QT_MOC_LITERAL(5, 45, 12) // "info_clicked"
 
     },
-    "head_label\0contact_clicked\0\0id\0"
-    "info_clicked"
+    "head_label\0contact_clicked\0\0head_label*\0"
+    "ellm\0info_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -58,11 +59,11 @@ static const uint qt_meta_data_head_label[] = {
 
  // signals: name, argc, parameters, tag, flags
        1,    1,   24,    2, 0x06 /* Public */,
-       4,    1,   27,    2, 0x06 /* Public */,
+       5,    1,   27,    2, 0x06 /* Public */,
 
  // signals: parameters
-    QMetaType::Void, QMetaType::Int,    3,
-    QMetaType::Void, QMetaType::Int,    3,
+    QMetaType::Void, 0x80000000 | 3,    4,
+    QMetaType::Void, 0x80000000 | 3,    4,
 
        0        // eod
 };
@@ -73,21 +74,39 @@ void head_label::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         auto *_t = static_cast<head_label *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->contact_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 1: _t->info_clicked((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 0: _t->contact_clicked((*reinterpret_cast< head_label*(*)>(_a[1]))); break;
+        case 1: _t->info_clicked((*reinterpret_cast< head_label*(*)>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 0:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< head_label* >(); break;
+            }
+            break;
+        case 1:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< head_label* >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (head_label::*)(int );
+            using _t = void (head_label::*)(head_label * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&head_label::contact_clicked)) {
                 *result = 0;
                 return;
             }
         }
         {
-            using _t = void (head_label::*)(int );
+            using _t = void (head_label::*)(head_label * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&head_label::info_clicked)) {
                 *result = 1;
                 return;
@@ -130,21 +149,21 @@ int head_label::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
         if (_id < 2)
-            *reinterpret_cast<int*>(_a[0]) = -1;
+            qt_static_metacall(this, _c, _id, _a);
         _id -= 2;
     }
     return _id;
 }
 
 // SIGNAL 0
-void head_label::contact_clicked(int _t1)
+void head_label::contact_clicked(head_label * _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void head_label::info_clicked(int _t1)
+void head_label::info_clicked(head_label * _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);

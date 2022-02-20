@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_client_t {
-    QByteArrayData data[12];
-    char stringdata0[126];
+    QByteArrayData data[15];
+    char stringdata0[175];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -40,16 +40,20 @@ QT_MOC_LITERAL(4, 33, 1), // "m"
 QT_MOC_LITERAL(5, 35, 17), // "write_to_server_2"
 QT_MOC_LITERAL(6, 53, 18), // "QVector<message*>*"
 QT_MOC_LITERAL(7, 72, 3), // "mgs"
-QT_MOC_LITERAL(8, 76, 9), // "show_data"
-QT_MOC_LITERAL(9, 86, 16), // "reconnect_server"
-QT_MOC_LITERAL(10, 103, 16), // "get_contact_info"
-QT_MOC_LITERAL(11, 120, 5) // "index"
+QT_MOC_LITERAL(8, 76, 23), // "update_user_scroll_list"
+QT_MOC_LITERAL(9, 100, 11), // "head_label*"
+QT_MOC_LITERAL(10, 112, 4), // "ellm"
+QT_MOC_LITERAL(11, 117, 9), // "show_data"
+QT_MOC_LITERAL(12, 127, 16), // "reconnect_server"
+QT_MOC_LITERAL(13, 144, 16), // "get_contact_info"
+QT_MOC_LITERAL(14, 161, 13) // "set_send_page"
 
     },
     "client\0write_to_server\0\0message*\0m\0"
     "write_to_server_2\0QVector<message*>*\0"
-    "mgs\0show_data\0reconnect_server\0"
-    "get_contact_info\0index"
+    "mgs\0update_user_scroll_list\0head_label*\0"
+    "ellm\0show_data\0reconnect_server\0"
+    "get_contact_info\0set_send_page"
 };
 #undef QT_MOC_LITERAL
 
@@ -59,30 +63,34 @@ static const uint qt_meta_data_client[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   39,    2, 0x06 /* Public */,
-       5,    1,   42,    2, 0x06 /* Public */,
+       1,    1,   49,    2, 0x06 /* Public */,
+       5,    1,   52,    2, 0x06 /* Public */,
+       8,    1,   55,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       8,    0,   45,    2, 0x0a /* Public */,
-       9,    0,   46,    2, 0x0a /* Public */,
-      10,    1,   47,    2, 0x0a /* Public */,
+      11,    0,   58,    2, 0x0a /* Public */,
+      12,    0,   59,    2, 0x0a /* Public */,
+      13,    1,   60,    2, 0x0a /* Public */,
+      14,    1,   63,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
     QMetaType::Void, 0x80000000 | 6,    7,
+    QMetaType::Void, 0x80000000 | 9,   10,
 
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   11,
+    QMetaType::Void, 0x80000000 | 9,   10,
+    QMetaType::Void, 0x80000000 | 9,   10,
 
        0        // eod
 };
@@ -95,10 +103,37 @@ void client::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->write_to_server((*reinterpret_cast< message*(*)>(_a[1]))); break;
         case 1: _t->write_to_server_2((*reinterpret_cast< QVector<message*>*(*)>(_a[1]))); break;
-        case 2: _t->show_data(); break;
-        case 3: _t->reconnect_server(); break;
-        case 4: _t->get_contact_info((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 2: _t->update_user_scroll_list((*reinterpret_cast< head_label*(*)>(_a[1]))); break;
+        case 3: _t->show_data(); break;
+        case 4: _t->reconnect_server(); break;
+        case 5: _t->get_contact_info((*reinterpret_cast< head_label*(*)>(_a[1]))); break;
+        case 6: _t->set_send_page((*reinterpret_cast< head_label*(*)>(_a[1]))); break;
         default: ;
+        }
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        switch (_id) {
+        default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+        case 2:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< head_label* >(); break;
+            }
+            break;
+        case 5:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< head_label* >(); break;
+            }
+            break;
+        case 6:
+            switch (*reinterpret_cast<int*>(_a[1])) {
+            default: *reinterpret_cast<int*>(_a[0]) = -1; break;
+            case 0:
+                *reinterpret_cast<int*>(_a[0]) = qRegisterMetaType< head_label* >(); break;
+            }
+            break;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
@@ -113,6 +148,13 @@ void client::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
             using _t = void (client::*)(QVector<message*> * );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&client::write_to_server_2)) {
                 *result = 1;
+                return;
+            }
+        }
+        {
+            using _t = void (client::*)(head_label * );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&client::update_user_scroll_list)) {
+                *result = 2;
                 return;
             }
         }
@@ -148,13 +190,13 @@ int client::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
-            *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        if (_id < 7)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 7;
     }
     return _id;
 }
@@ -171,6 +213,13 @@ void client::write_to_server_2(QVector<message*> * _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void client::update_user_scroll_list(head_label * _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

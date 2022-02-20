@@ -70,6 +70,7 @@ void t_socket::write_process()
         message* result = msg_opr->msg_dispatch(mg);
         if(result->type == 7) {this->server->add_unproced_message(result); delete mg;return;}
         if(result->type == 12) {this->server->add_client(result->sender,this);}
+        result->print();
         this->write(message_serialization::serialize(result));
         this->flush();
         delete mg;

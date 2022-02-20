@@ -14,14 +14,17 @@ public:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
     QString text_assistant;
-    QImage* img;
-    int id;
+    QImage* img = nullptr;
+    int id = -1;
     int is_contact = 1;
     int is_enter = 0;
-    user* parent;
+    int is_level = 0;
+    int is_get_server = 0;
+    int is_open = 0;
+    user* parent = nullptr;
 signals:
-    void contact_clicked(int id);
-    void info_clicked(int id);
+    void contact_clicked(head_label* ellm);
+    void info_clicked(head_label* ellm);
 };
 
 #endif // HEAD_LABEL_H

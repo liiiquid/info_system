@@ -14,6 +14,7 @@ user::user(int id, QString name, int type,MainWindow* parent,int x,int y, int wi
     this->label = new head_label(this);
     label->move(x,y);
     label->setParent(this->parent);
+    label->setText(this->name);
     label->setFixedSize(width,height);
     label->id = this->id;
 }
