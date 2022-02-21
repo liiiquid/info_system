@@ -73,7 +73,7 @@ QString db_operation::select(QString sql)
             }
             str+='\n';
         }
-        str += '0' + query.size();
+        //str += '0' + query.size();
     }
     query.clear();
    no_link();

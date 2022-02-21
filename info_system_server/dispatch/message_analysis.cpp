@@ -19,7 +19,7 @@ message *message_analysis::msg_analysis(message *msg)
 {
     if(msg->type == 0)
         return login->login_check(msg);
-    else if(msg->type == 10 || msg->type == 16 || msg->type == 17 || msg->type == 18 || msg->type == 19)
+    else if(msg->type == 10 || msg->type == 16 || msg->type == 17 || msg->type == 18 || msg->type == 19|| msg->type == 20)
         return select->select_db(msg);
     else if(msg->type == 2 || msg->type == 11)
         return update->update_db(msg);

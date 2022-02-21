@@ -21,6 +21,8 @@ public:
     int is_level = 0;
     int is_get_server = 0;
     int is_open = 0;
+    int unread = 0;
+    QString name;
     user* parent = nullptr;
 signals:
     void contact_clicked(head_label* ellm);

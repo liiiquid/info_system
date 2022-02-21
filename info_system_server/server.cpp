@@ -45,10 +45,11 @@ bool server::admin_login(message msg)
     sql += up[1];
     sql += "';";
     QString result = dbo->select(sql);
-    QVector<QString> ress;
-    ress= msg_serial.split(result,"\t\n");
+    //QVector<QString> ress;
+    //ress= msg_serial.split(result,"\t\n");
+    QVector<QString> res = message_serialization::analysis_content(result);
 
-    return ress[ress.size()-1].toInt() > 0;
+    return res.size() == 2;
 }
 bool server::admin_register(message msg)
 {

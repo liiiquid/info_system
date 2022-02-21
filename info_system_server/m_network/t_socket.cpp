@@ -54,7 +54,12 @@ void t_socket::read()
     QByteArray array =  this->readAll();
     qDebug() << array;
     QVector<QString> msgs_str = message_serialization::analysis_serialize_2(array);
+    for(int i = 0; i < msgs_str.size();i++)
+    {
+        qDebug() << msgs_str[i];
+    }
     QVector<message*> mgs = message_serialization::unserialize_2(msgs_str);
+
     for(int i = 0; i < mgs.size();i++)
     {
         msgs->enqueue(mgs[i]);

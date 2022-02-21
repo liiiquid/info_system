@@ -26,6 +26,10 @@ void head_label::paintEvent(QPaintEvent* )
         p.drawText(QRect(50,10,200,50),Qt::AlignLeft,this->text());
     }else{
         p.drawText(QRect(50,0,200,25),Qt::AlignLeft,this->text());
+        if(unread)
+        {
+            p.setPen(QColor(255,100,100));
+        }
         p.drawText(QRect(50,25,200,25),Qt::AlignLeft,this->text_assistant);
     }
 }
@@ -39,6 +43,7 @@ void head_label::mousePressEvent(QMouseEvent *)
     }
     if(is_contact) emit contact_clicked(this);
     else emit info_clicked(this);
+    if(unread) unread = 0;
 }
 
 void head_label::enterEvent(QEvent*)

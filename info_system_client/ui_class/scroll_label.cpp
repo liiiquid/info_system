@@ -17,7 +17,9 @@ void scroll_label::paintEvent(QPaintEvent*)
         pen.setColor(QColor(0,0,0));
         pen.setWidth(5);
         p.setPen(pen);
+        if(is_info < 2)
         p.drawLine(QPointF(247,y_start),QPointF(247,y_start + length));
+        else p.drawLine(QPointF(547,y_start),QPointF(547,y_start+length));
 }
 
 void scroll_label::add_first_control(head_label *first_control)
@@ -144,10 +146,10 @@ void scroll_label::add_info_elem(head_label *ellm)/*add the elements and show th
     is_info = 1;
     for(int i = 0; i < info_list_controls.size();i++)
     {
-        info_list_controls[i]->move(info_list_controls[i]->x(), info_list_controls[i]->y() +30);
+        info_list_controls[i]->move(info_list_controls[i]->x(), info_list_controls[i]->y() +50);
         info_list_controls[i]->show();
     }
-    ellm->setFixedSize(245,30);
+    ellm->setFixedSize(245,50);
     ellm->is_level = 2;
     ellm->setParent(this);
     ellm->move(0,10);
@@ -159,13 +161,77 @@ void scroll_label::add_info_elem(head_label *ellm)/*add the elements and show th
     y_start = 0;
 }
 
+head_label* scroll_label::find_info_elem(int id)
+{
+    for(int i = 0; i < info_list_controls.size();i++)
+    {
+        if(info_list_controls[i]->id == id) return info_list_controls[i];
+    }
+    return nullptr;
+}
+
 void scroll_label::set_scroll_page(QVector<QLabel *> *ellm)
 {
     is_info = 2;
+    if(info_page)
+    {
+        for(int i = 0; i < info_page->size(); i++)
+        {
+            info_page->at(i)->hide();
+        }
+    }
     this->info_page = ellm;
+    for(int i = 0; i < ellm->size(); i++)
+    {
+        ellm->at(i)->setFixedSize(200,50);
+        ellm->at(i)->setStyleSheet("QLabel{background:#c0ebd7;}");
+        ellm->at(i)->setParent(this);
+
+    }
+    if(ellm->size() > 0)
+    {
+        if(ellm->last()->y() > this->height())
+        {
+            while(ellm->last()->y() + 50> this->height())
+            {
+                for(int i = 0; i < ellm->size();i++)
+                {
+                    ellm->at(i)->move(ellm->at(i)->x(),ellm->at(i)->y() - 60);
+                }
+            }
+        }
+        for(int i = 0; i < ellm->size();i++)
+        {
+            ellm->at(i)->show();
+        }
+        this->total_len = info_page->size() * info_page->first()->height();
+        if(total_len > 0)
+        this->length = this->height() * this->height() / total_len;
+    }
 }
-
-
+void scroll_label::add_page_elem(QLabel* ellm)
+{
+    this->info_page->push_back(ellm);
+    ellm->setFixedSize(200,50);
+    ellm->setStyleSheet("QLabel{background:#c0ebd7;}");
+    ellm->setParent(this);
+    if(this->info_page->last()->y() > this->height())
+    {
+        while(info_page->last()->y() + 50> this->height())
+        {
+            for(int i = 0; i < info_page->size();i++)
+            {
+                info_page->at(i)->move(info_page->at(i)->x(),info_page->at(i)->y() - 60);
+            }
+        }
+    }
+    for(int i = 0; i < info_page->size();i++)
+    {
+        info_page->at(i)->show();
+    }
+    this->total_len = info_page->size() * info_page->first()->height();
+    this->length = this->height() * this->height() / total_len;
+}
 void scroll_label::update_list(head_label* ellm)
 {
   set_location(ellm);
@@ -176,8 +242,6 @@ void scroll_label::wheelEvent(QWheelEvent* ev)
     //if(total_len < this->height()) return;
     int delta = (ev->delta()/3);
     u =total_len / this->height();
-
-
     if(u > 0)
     {
         int dy = delta *u;
@@ -228,14 +292,20 @@ void scroll_label::wheelEvent(QWheelEvent* ev)
 
 void scroll_label::clear_scroll_list()
 {
-    for(QHash<head_label*,QVector<head_label*>*>::Iterator i = this->sec_level_controls.begin();i!=this->sec_level_controls.end();i++)
+    for(QHash<head_label*,QVector<head_label*>*>::Iterator i = this->sec_level_controls.begin();i!=this->sec_level_controls.end();)
     {
         QVector<head_label*>* container = i.value();
+
         while(container->size() > 0)
         {
             delete container->last(); container->removeLast();
         }
         delete container;
-        this->sec_level_controls.remove(i.key());
+        i = this->sec_level_controls.erase(i);
+    }
+
+    while(fir_level_controls.size() > 0)
+    {
+        delete fir_level_controls.last(); fir_level_controls.removeLast();
     }
 }

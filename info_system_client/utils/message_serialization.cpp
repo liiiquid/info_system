@@ -91,7 +91,7 @@ message* message_serialization::unserialize(QString str)
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QVector<QString> strs = split(str,QString(SERIAL_FMT));
     if(strs.size() != NUM_ATTRIBUTE)
-    {qDebug() << "message exception...  message_serialization() ";return new message(0,0,0,0,0,str);}
+    {qDebug() << "message exception...  message_serialization::unserialize(QString str): " << strs; return new message(0,0,0,0,0,str);}
     msg->type = str2int(strs[0]);
     msg->sender = str2int(strs[1]);
     msg->send_type = str2int(strs[2]);
@@ -129,18 +129,18 @@ QVector<QString> message_serialization::analysis_serialize_2(QString msgs)
     QString str = "";
      QTextCodec *codec = QTextCodec::codecForName("utf-8");
      codec->fromUnicode(msgs);
-    for(int i = 0; i < msgs.length();i++)
-    {
-       if(msgs[i] == '\v' || i == msgs.length() - 1)
-       {
-           if(msgs.length() - 1 == i)
-           {
-               str += ';';
-           }
-           msgs_str.push_back(str); str = "";
-       }else{
-           str+=msgs[i];
-       }
+     for(int i = 0; i < msgs.length();i++)
+     {
+        if(msgs[i] == '\v' || i == msgs.length() - 1)
+        {
+            if(msgs.length() - 1 == i)
+            {
+                str += msgs[i];
+            }
+            msgs_str.push_back(str); str = "";
+        }else{
+            str+=msgs[i];
+        }
     }
     return msgs_str;
 }
@@ -155,7 +155,9 @@ QVector<message*> message_serialization::unserialize_2(QVector<QString>& str_inp
         QTextCodec *codec = QTextCodec::codecForName("utf-8");
         QVector<QString> strs = split(str_input[i],QString(SERIAL_FMT));
         if(strs.size() != NUM_ATTRIBUTE)
-        {qDebug() << "message exception...  message_serialization() ";ret_msgs.push_back(new message(0,0,0,0,0,"解析消息错误...")); return ret_msgs;}
+        {qDebug() << "message exception...  message_serialization::unserialize_2(QVector<QString>& str_input)...... ";
+            qDebug() << strs;
+            ret_msgs.push_back(new message(0,0,0,0,0,"解析消息错误...")); return ret_msgs;}
         msg->type = str2int(strs[0]);
         msg->sender = str2int(strs[1]);
         msg->send_type = str2int(strs[2]);

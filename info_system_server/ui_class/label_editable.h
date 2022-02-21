@@ -7,7 +7,7 @@ class label_editable : public QLabel
 {
 public:
     void mouseDoubleClickEvent(QMouseEvent* event);
-    text_edit* line_edit;
+    text_edit* line_edit = nullptr;
     label_editable(QWidget* parent = nullptr);
     QString text_origin;
     bool store = true;

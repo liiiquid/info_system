@@ -7,7 +7,8 @@ label_editable::label_editable(QWidget *parent) : QLabel(parent)
 void label_editable::mouseDoubleClickEvent(QMouseEvent *event)
 {
     if(store) {text_origin = this->text(); store = false;}
-    line_edit = new text_edit(this);
+    if(line_edit == nullptr)
+        line_edit = new text_edit(this);
     QObject::connect(line_edit,&text_edit::edit_finished,this,&label_editable::get_edit_text);
     line_edit->setFixedSize(this->width(),this->height());
     line_edit->move(0,0);

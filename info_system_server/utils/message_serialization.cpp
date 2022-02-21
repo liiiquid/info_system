@@ -135,13 +135,14 @@ QVector<QString> message_serialization::analysis_serialize_2(QString msgs)
        {
            if(msgs.length() - 1 == i)
            {
-               str += ';';
+               str += msgs[i];
            }
+           qDebug() << str;
            msgs_str.push_back(str); str = "";
        }else{
            str+=msgs[i];
        }
-    }
+   }
     return msgs_str;
 }
 

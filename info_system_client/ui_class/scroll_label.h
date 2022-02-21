@@ -18,10 +18,12 @@ public:
     void set_location(head_label* ellm);
 
     void add_info_elem(head_label* ellm);
+    head_label* find_info_elem(int id);
      QVector<head_label*> info_list_controls;
 
      void set_scroll_page(QVector<QLabel*>* ellm);
-    QVector<QLabel*>* info_page;
+     void add_page_elem(QLabel* ellm);
+    QVector<QLabel*>* info_page = nullptr;
 
     int is_info = 0;/*0 - contact list, 1 - info list, 2 - info page, mainly used to recognize how to scroll*/
     int is_scroll = 0;

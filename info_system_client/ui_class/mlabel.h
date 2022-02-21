@@ -10,7 +10,7 @@ public:
     MLabel(char identifier,int index,QString title);
     MLabel(char identifier,int index);
     int isenter = 0;
-    int isload_log = 0;
+    int type = 0;
 public:
     void mousePressEvent(QMouseEvent* e);
     void enterEvent(QEvent*);

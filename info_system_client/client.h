@@ -63,17 +63,23 @@ public:
 
 
 
-
+    /*profile page*/
+    MLabel* update_profile = new MLabel(IDENTIFIER_MAIN,8,"确认修改(双击修改信息)"); MLabel* profile_btn = new MLabel(IDENTIFIER_MAIN,9,"个人信息修改");
+    label_editable* picture =  new label_editable();
+    label_editable* profile_name = new label_editable(); label_editable* profile_id = new label_editable(); label_editable* profile_gender = new label_editable();
+    label_editable* profile_age = new label_editable(); label_editable* profile_tel = new label_editable(); label_editable* profile_class = new label_editable();
+    QVector<label_editable*> all_profile_controls;
     /*ui area*/
      void show_client(MainWindow* parent); /*display the main page of this software*/
      void show_main_list(MainWindow* parent);
      void show_info_list(MainWindow* parent);
     void show_contact_list(MainWindow* parent);
+    void show_profile_list(MainWindow* parent);
      /*ui prepared such as the initilization of these controls*/
     void init_main_list(MainWindow* parent);
     void init_contact_list(MainWindow* parent);
     void init_info_list(MainWindow* parent);
-
+    void init_profile_list(MainWindow* parent);
 
     /*clear functions*/
     void clear_users_label(QVector<head_label*>& label);
@@ -88,17 +94,23 @@ public:
 
      void main_process(int index);//send request to the server
 
+
      /*send information*/
      void get_user_info();
     void connect_server();
+    void send_info_friends();
     bool client_login(message msg);
     bool client_register(message msg);
-    void set_communication_btn(QString id);
+    void send_profile_info();
+    void change_profile();
     /*process information*/
     void show_data_prepare(message* mg);
+
+    void get_profile(message* mg);
     void get_users_name(message* mg);
     void get_class_student(message* mg);
     void get_user_profile(message* mg);
+    head_label*  check_send_page_open(int id);
     void open_send_page(int id);
 signals:
     void write_to_server(message* m);/*via this signal to notify the socket write data to server*/

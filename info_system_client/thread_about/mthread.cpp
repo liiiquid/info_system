@@ -1,5 +1,6 @@
 #include "mthread.h"
 #include "../client.h"
+QMutex mutex_read_queue;
 mthread::mthread(client* cl)
 {
     this->client_ptr = cl;
@@ -44,12 +45,11 @@ void mthread::run()
 void mthread::read()
 {
     this->shared = this->socket->readAll();
-    QVector<QString> mgs_str = message_serialization::analysis_serialize_2(shared);
-    for(int i = 0; i < mgs_str.size();i++)
-    {
-        message* tm = message_serialization::unserialize(mgs_str[i]);
-         this->client_ptr->read_msgs.enqueue(tm);
-    }
+    qDebug() << shared;
+    message* mg = message_serialization::unserialize(shared); // 2022 2.21 服务器发送客户端接收使用单消息, 客户端发送服务器收用多消息发送.
+    mutex_read_queue.lock();
+    this->client_ptr->read_msgs.enqueue(mg);
+    mutex_read_queue.unlock();
     emit process_ok();
 }
 
